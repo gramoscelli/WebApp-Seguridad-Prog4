@@ -18,6 +18,8 @@ cd frontend
 npm install
 ```
 
+> **Nota:** El frontend usa `happy-dom` en lugar de `jsdom` para evitar problemas de compatibilidad con versiones recientes de Node.js.
+
 ---
 
 ## 🧪 Ejecución de Tests
@@ -187,6 +189,14 @@ Todos los tests fueron creados siguiendo esta metodología, documentada en:
 
 ### Error: "Cannot find module '@testing-library/react'"
 **Solución:** Ejecuta `npm install` en la carpeta `frontend/`
+
+### Error: "require() of ES Module not supported" con jsdom
+**Solución:** Ya está resuelto. El proyecto usa `happy-dom` en lugar de `jsdom` para evitar problemas de compatibilidad. Si actualizaste desde una versión anterior, ejecuta:
+```bash
+cd frontend
+rm -rf node_modules package-lock.json
+npm install
+```
 
 ### Error: "sh: 1: jest: not found"
 **Solución:** Asegúrate de ejecutar `npm test` (no `jest` directamente)

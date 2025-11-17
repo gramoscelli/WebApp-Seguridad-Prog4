@@ -30,6 +30,8 @@
     "start": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "test": "vitest"
+    "test": "vitest src/test/HelloButton.test.tsx",
+    "test:all": "vitest",
+    "test:ui": "vitest --ui"
   }
 }

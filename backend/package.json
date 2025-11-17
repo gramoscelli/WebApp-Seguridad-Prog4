@@ -5,10 +5,12 @@
   "main": "server.js",
   "scripts": {
     "start": "nodemon src/server.js",
-    "test": "jest --watchAll",
+    "test": "jest --testPathPattern=\"(integration/hello|security/SIMU-SQLInjection)\" --watchAll",
+    "test:all": "jest --watchAll",
     "test:ci": "jest --ci",
     "test:coverage": "jest --coverage",
-    "test:security": "node test/run-security-tests.js"
+    "test:security": "node test/run-security-tests.js",
+    "test:simulacro": "jest --testPathPattern=\"(integration/hello|security/SIMU-SQLInjection)\" --no-watchAll"
   },
   "dependencies": {
     "express": "^4.18.2",

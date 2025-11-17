@@ -6,12 +6,14 @@ const authRoutes = require('./auth');
 const productRoutes = require('./products');
 const vulnerabilityRoutes = require('./vulnerabilities');
 const captchaRoutes = require('./captcha');
+const helloRoutes = require('./hello');
 
 // Usar las rutas
 router.use('/', authRoutes);
 router.use('/', productRoutes);
 router.use('/', vulnerabilityRoutes);
 router.use('/', captchaRoutes);
+router.use('/', helloRoutes);
 
 // Ruta de prueba
 router.get('/health', (req, res) => {

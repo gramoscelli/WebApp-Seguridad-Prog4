@@ -5,12 +5,12 @@
   "main": "server.js",
   "scripts": {
     "start": "nodemon src/server.js",
-    "test": "jest test/integration/hello.test.js test/security/SIMU-SQLInjection.test.js --watchAll",
-    "test:all": "jest --watchAll",
-    "test:ci": "jest --ci",
-    "test:coverage": "jest --coverage",
+    "test": "npx jest test/integration/hello.test.js test/security/SIMU-SQLInjection.test.js --watchAll",
+    "test:all": "npx jest --watchAll",
+    "test:ci": "npx jest --ci",
+    "test:coverage": "npx jest --coverage",
     "test:security": "node test/run-security-tests.js",
-    "test:simulacro": "jest test/integration/hello.test.js test/security/SIMU-SQLInjection.test.js --no-watchAll"
+    "test:simulacro": "npx jest test/integration/hello.test.js test/security/SIMU-SQLInjection.test.js --no-watchAll"
   },
   "dependencies": {
     "express": "^4.18.2",

@@ -5,10 +5,12 @@
   "main": "server.js",
   "scripts": {
     "start": "nodemon src/server.js",
-    "test": "jest --watchAll",
+    "test": "jest test/integration/products-count.test.js test/security/admin-rate-limit.test.js --watchAll",
+    "test:all": "jest --watchAll",
     "test:ci": "jest --ci",
     "test:coverage": "jest --coverage",
-    "test:security": "node test/run-security-tests.js"
+    "test:security": "node test/run-security-tests.js",
+    "test:nuevos": "jest test/integration/products-count.test.js test/security/admin-rate-limit.test.js --no-watchAll"
   },
   "dependencies": {
     "express": "^4.18.2",

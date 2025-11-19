@@ -2,33 +2,82 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { db } = require('../config/database');
 
-// VULNERABLE: Sin rate limiting para prevenir brute force
+// Rate limiting para usuario admin
+// Map: { username: { attempts: number, blockedUntil: timestamp } }
+const loginAttempts = new Map();
+
+const MAX_ATTEMPTS = 3;
+const BLOCK_DURATION_MS = 15 * 60 * 1000; // 15 minutos
+
+// Función para limpiar intentos de login (útil para testing)
+const clearLoginAttempts = () => {
+  loginAttempts.clear();
+};
+
+// Rate limiting para prevenir brute force en admin
 const login = async (req, res) => {
   const { username, password } = req.body;
-  
+
+  // Verificar rate limiting solo para admin
+  if (username === 'admin') {
+    const now = Date.now();
+    const userAttempts = loginAttempts.get(username) || { attempts: 0, blockedUntil: 0 };
+
+    // Si está bloqueado, verificar si ya pasó el tiempo
+    if (userAttempts.blockedUntil > now) {
+      const retryAfter = Math.ceil((userAttempts.blockedUntil - now) / 1000); // segundos
+      return res.status(429).json({
+        error: 'Cuenta bloqueada por múltiples intentos fallidos',
+        retryAfter
+      });
+    }
+
+    // Si ya pasó el tiempo de bloqueo, resetear
+    if (userAttempts.blockedUntil > 0 && userAttempts.blockedUntil <= now) {
+      loginAttempts.delete(username);
+    }
+  }
+
   const query = `SELECT * FROM users WHERE username = ?`;
-  
+
   db.query(query, [username], async (err, results) => {
     if (err) {
       return res.status(500).json({ error: 'Error en el servidor' });
     }
-    
+
     if (results.length === 0) {
       return res.status(401).json({ error: 'Credenciales inválidas' });
     }
-    
+
     const user = results[0];
     const isValidPassword = await bcrypt.compare(password, user.password);
-    
+
     if (!isValidPassword) {
+      // Incrementar intentos fallidos solo para admin
+      if (username === 'admin') {
+        const userAttempts = loginAttempts.get(username) || { attempts: 0, blockedUntil: 0 };
+        userAttempts.attempts += 1;
+
+        if (userAttempts.attempts >= MAX_ATTEMPTS) {
+          userAttempts.blockedUntil = Date.now() + BLOCK_DURATION_MS;
+        }
+
+        loginAttempts.set(username, userAttempts);
+      }
+
       return res.status(401).json({ error: 'Credenciales inválidas' });
     }
-    
+
+    // Login exitoso: resetear intentos para admin
+    if (username === 'admin') {
+      loginAttempts.delete(username);
+    }
+
     const token = jwt.sign(
-      { id: user.id, username: user.username }, 
+      { id: user.id, username: user.username },
       process.env.JWT_SECRET || 'supersecret123'
     );
-    
+
     res.json({ token, username: user.username });
   });
 };
@@ -85,5 +134,6 @@ module.exports = {
   login,
   register,
   verifyToken,
-  checkUsername
+  checkUsername,
+  clearLoginAttempts
 };

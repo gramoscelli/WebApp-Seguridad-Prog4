@@ -34,7 +34,7 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
 
   return (
     <div className="login-container">
-      <h2>{isRegistering ? 'Registrar Usuario' : 'Iniciar Sesión'}</h2>
+      <h2>{isRegistering ? 'Registrar Usuario' : 'Bienvenido al Sistema'}</h2>
       <form onSubmit={handleSubmit}>
         <div className="form-group">
           <label htmlFor="username">Usuario:</label>

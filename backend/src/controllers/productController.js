@@ -23,6 +23,19 @@ const getProducts = (req, res) => {
   });
 };
 
+// GET /products/count - Devuelve el conteo total de productos
+const getProductsCount = (req, res) => {
+  const query = 'SELECT COUNT(*) as count FROM products';
+
+  db.query(query, (err, results) => {
+    if (err) {
+      return res.status(500).json({ error: err.message });
+    }
+    res.json({ count: results[0].count });
+  });
+};
+
 module.exports = {
-  getProducts
+  getProducts,
+  getProductsCount
 };
